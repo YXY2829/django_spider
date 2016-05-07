@@ -4,18 +4,28 @@ from django.template import loader,Context
 import requests
 from bs4 import BeautifulSoup
 import time
+from pic_blog.models import Picture
+
 # Create your views here.
-
-
 def home(request):
-    t=loader.get_template('home.html')
+    return render(request,'home.html',{'name':'Django'})
+
+def picture(request):
+    t=loader.get_template('picture.html')
     pic_indexs=[]
-    urls=['http://jandan.net/ooxx/page-%d#comments'% i for i in range(1966,1955,-1)]
+    headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36',
+    'Referer':'http://jandan.net/ooxx/page-1980'}
+    urls=['http://jandan.net/ooxx/page-%d#comments'% i for i in range(1979,1975,-1)]
     for url in urls:
-        res = requests.get(url)
+        res = requests.get(url,headers=headers)
         html = BeautifulSoup(res.text,'lxml')
         for index in html.select('#comments img'):
             pic_indexs.append(index.get('src'))
         time.sleep(0.5)
-    c=Context({'pic_indexs':pic_indexs})
+    for pic in pic_indexs:
+        name=pic[:10]
+        index=pic
+        Picture.objects.get_or_create(name=name,index=index)
+    picture=Picture.objects.all()
+    c=Context({'pics':picture})
     return HttpResponse(t.render(c))

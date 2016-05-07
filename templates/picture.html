@@ -5,6 +5,8 @@
     <title>Django-spider</title>
 </head>
 <body>
-<h1>Hello {{ name }}</h1>
+{% for index in pics %}
+    <img src="{{ index }}" height="600" width=32.9% >
+{% endfor %}
 </body>
 </html>
