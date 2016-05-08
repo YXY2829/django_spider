@@ -11,8 +11,8 @@ def home(request):
     return render(request,'home.html',{'name':'Django'})
 
 def picture(request):
-    t=loader.get_template('picture.html')
     pic_indexs=[]
+    pics=[]
     headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36',
     'Referer':'http://jandan.net/ooxx/page-1980'}
     urls=['http://jandan.net/ooxx/page-%d#comments'% i for i in range(1979,1975,-1)]
@@ -25,7 +25,8 @@ def picture(request):
     for pic in pic_indexs:
         name=pic[:10]
         index=pic
-        Picture.objects.get_or_create(name=name,index=index)
+        pictures=Picture(name=name,index=index)
+        pics.append(pictures)
+    Picture.objects.bulk_create(pics)
     picture=Picture.objects.all()
-    c=Context({'pics':picture})
-    return HttpResponse(t.render(c))
+    return render(request,'picture.html',{'pics':picture})
