@@ -5,8 +5,11 @@
     <title>Django-spider</title>
 </head>
 <body>
+{% load pagination_tags %}
+
 {% for index in pics %}
     <img src="{{ index.index }}" height="600" width=32.9% >
+    {% autopaginate 30 %}
 {% endfor %}
 </body>
 </html>
